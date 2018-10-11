@@ -5,6 +5,7 @@ import numpy as np
 import pymysql
 import threading
 import time
+import re
 connect = pymysql.connect(host='localhost', port=3306, user='root', password='chigiang85', db='Fb')
 cursor = connect.cursor()
 #
@@ -65,21 +66,22 @@ def import_database(start, end):
     cursor = connect.cursor()
     # print(type(bulks))
     for index, row in df[start: end].iterrows():
-        bulks.append((str(row[0]), str(row[1]), str(row[2]), str(row[3]), str(row[4])[0:300], str(row[5]), str(row[6]), str(row[7])))
-        if len(bulks) == 10000:
-            try:
-                cursor.executemany(query, bulks)
-                connect.commit()
-                bulks.clear()
-            except:
-                connect.rollback()
-        elif index == end - 1:
-            try:
-                cursor.executemany(query, bulks)
-                connect.commit()
-                bulks.clear()
-            except:
-                connect.rollback()
+        if re.match('^[0-9]*$', str(row[0])):
+            bulks.append((str(row[0]), str(row[1]), str(row[2]), str(row[3]), str(row[4])[0:300], str(row[5]), str(row[6]), str(row[7])))
+            if len(bulks) == 10000:
+                try:
+                    cursor.executemany(query, bulks)
+                    connect.commit()
+                    bulks.clear()
+                except:
+                    connect.rollback()
+            elif index == end - 1:
+                try:
+                    cursor.executemany(query, bulks)
+                    connect.commit()
+                    bulks.clear()
+                except:
+                    connect.rollback()
 # import_database(0, 100)
 # import_database(0,14)
 # import_database(0, 100)

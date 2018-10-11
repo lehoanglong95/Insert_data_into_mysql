@@ -1,17 +1,25 @@
-def java_string_hashcode(s):
-    h = 0
-    for c in s:
-        h = (31 * h + ord(c)) & 0xFFFFFFFF
-    return ((h + 0x80000000) & 0xFFFFFFFF) - 0x80000000
+# def java_string_hashcode(s):
+#     h = 0
+#     for c in s:
+#         h = (31 * h + ord(c)) & 0xFFFFFFFF
+#     return ((h + 0x80000000) & 0xFFFFFFFF) - 0x80000000
+#
+#
+# def partition(s):
+#     raw_code = java_string_hashcode(s) % 20
+#     if raw_code < 0:
+#         raw_code = raw_code + 20
+#     return raw_code
+#
+# print(partition('841647564128'))
+import re
 
+word = "841642611995asdasdas"
+if re.match('^[0-9]*$', word):
+    print("truee")
+else:
+    print("false")
 
-def partition(s):
-    raw_code = java_string_hashcode(s) % 20
-    if raw_code < 0:
-        raw_code = raw_code + 20
-    return raw_code
-
-print(partition('841647564263'))
 
 
 
