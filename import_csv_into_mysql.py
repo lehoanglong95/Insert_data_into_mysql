@@ -25,7 +25,7 @@ for result in results:
 print(province_lists)
 print(district_lists)
 
-query = "REPLACE INTO phone_to_fb_part0_test(msisdn, fb_id, gender, dob, name, province, district, ward) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+query = "REPLACE INTO phone_to_fb_part0_test(msisdn, fb_id, gender, age, name, province, district, ward) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
 
 # path = "/home/longle/Downloads/phone_profile_db"
 # all_files = glob.glob(os.path.join(path, "*.csv"))
@@ -98,7 +98,7 @@ def import_database(start, end):
                 gender = 1
             elif str(row[2]) == 'F':
                 gender = 0
-            if str(row[3]) != 'nan':
+            if len(str(row[3])) >= 4:
                 age = 2018 - int(str(row[3])[:4])
             # province_id = province_lists[str(row[5])]
             # district_id = district_lists[str(row[6])]
