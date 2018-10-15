@@ -1,11 +1,14 @@
 import pandas as pd
-import glob
-import os
-import numpy as np
 import pymysql
 import threading
 import time
 import re
+import sys
+
+argv = sys.argv
+table_name = argv(1)
+input_name = argv(2)
+
 connect = pymysql.connect(host='localhost', port=3306, user='root', password='chigiang85', db='Fb')
 cursor = connect.cursor()
 
@@ -25,7 +28,9 @@ for result in results:
 print(province_lists)
 print(district_lists)
 
-query = "REPLACE INTO phone_to_fb_part0_test(msisdn, fb_id, gender, age, name, province, district, ward) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+# phone_to_fb_part0_test
+
+query = "REPLACE INTO {}(msisdn, fb_id, gender, age, name, province, district, ward) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)".format(table_name)
 
 # path = "/home/longle/Downloads/phone_profile_db"
 # all_files = glob.glob(os.path.join(path, "*.csv"))
@@ -73,7 +78,8 @@ query = "REPLACE INTO phone_to_fb_part0_test(msisdn, fb_id, gender, age, name, p
 # import pandas as pd
 
 # df = pd.read_csv('/home/longle/Desktop/phone_to_fb/new_file',header=None)
-df = pd.read_csv('/home/longle/Desktop/phone_to_fb/part-r-00000-9e544572-7f08-4303-9815-e99b28106f33.csv', header=None, low_memory=False)
+# /home/longle/Desktop/phone_to_fb/part-r-00000-9e544572-7f08-4303-9815-e99b28106f33.csv
+df = pd.read_csv('{}'.format(input_name), header=None, low_memory=False)
 # df.count()
 len_value = len(df)
 

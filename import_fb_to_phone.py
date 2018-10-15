@@ -2,13 +2,18 @@ import pandas as pd
 import pymysql
 import threading
 import time
+import sys
+
+argv = sys.argv
+table_name = argv[1]
+input_name = argv[2]
+
 connect = pymysql.connect(host='localhost', port=3306, user='root', password='chigiang85', db='Fb')
 cursor = connect.cursor()
 
-query = "REPLACE INTO fb_to_phone_part0(fb_id, msisdn) VALUES (%s, %s)"
-
-df = pd.read_csv('/home/longle/Desktop/fb_to_phone/part-r-00000-5c44938b-937a-4aee-b6d9-793790427e74.csv', header=None, low_memory=False)
-# df.count()
+query = "REPLACE INTO {}(fb_id, msisdn) VALUES (%s, %s)".format(table_name)
+df = pd.read_csv('{}'.format(input_name), header=None, low_memory=False, names=['fb_id', 'msisdn'])
+new_df = df.drop_duplicates(['fb_id'], keep='last')
 len_value = len(df)
 
 def import_database(start, end):
@@ -16,22 +21,22 @@ def import_database(start, end):
     connect = pymysql.connect(host='localhost', port=3306, user='root', password='chigiang85', db='Fb')
     cursor = connect.cursor()
     # print(type(bulks))
-    for index, row in df[start: end].iterrows():
+    for index, row in new_df[start: end].iterrows():
             bulks.append((str(row[0]), str(row[1])))
             if len(bulks) == 10000:
-                try:
+                # try:
                     cursor.executemany(query, bulks)
                     connect.commit()
                     bulks.clear()
-                except:
-                    connect.rollback()
+                # except:
+                #     connect.rollback()
             elif index == end - 1:
-                try:
+                # try:
                     cursor.executemany(query, bulks)
                     connect.commit()
                     bulks.clear()
-                except:
-                    connect.rollback()
+                # except:
+                #     connect.rollback()
 #
 try:
     t = time.time()
